@@ -24,7 +24,10 @@ namespace ExampleService
             services.AddMvc()
                 .AddJsonOptions(opts =>
                 {
+                    // Use string enum conversion instead of int
                     opts.SerializerSettings.Converters.Add(new StringEnumConverter());
+
+                    // Use same JSON.NET serialization settings across the solution
                     JsonConvert.DefaultSettings = () => opts.SerializerSettings;
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
@@ -32,22 +35,15 @@ namespace ExampleService
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            var isDev = env.IsDevelopment();
-
-            if (!isDev)
+            if (!env.IsDevelopment())
             {
                 app.UseHsts();
             }
 
             app.UseHttpsRedirection();
-
-            if (isDev)
-            {
-                app.UseSwagger();
-                app.UseSwaggerUi3();
-            }
-
-            app.UseExampleExceptionHandling();
+            app.UseSwagger();
+            app.UseSwaggerUi3();
+            app.UseExampleExceptionHandling(); // Our exception handling middleware
             app.UseMvc();
         }
     }

@@ -15,16 +15,21 @@ namespace ExampleService.Controllers
                 Name = "My example",
                 Type = ExampleType.Two
             };
-            //log.Log("Something happened")
+
+            // Response with Example data
             return new ApiResponse<ExampleResponse>(example);
         }
 
         [HttpGet("with-exception")]
-        public ApiResponse GetWithException()
+        public ApiResponse GetWithException([FromQuery] bool throwIt)
         {
-            // Will be caught in middleware 
-            throw new ExampleNotFoundException(ExampleErrorCodes.ExampleNotFound, "Example not found");
+            if (throwIt)
+            {
+                // Will be caught in middleware 
+                throw new ExampleNotFoundException(ExampleErrorCodes.ExampleNotFound, "Example not found");
+            }
 
+            // Empty successful response
             return new ApiResponse();
         }
     }
